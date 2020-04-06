@@ -1,4 +1,4 @@
-const config = require('./config.json');
+const config = require('./config.json');//Config file with API keys
 const TelegramBot = require('node-telegram-bot-api');
 const { StreamClient } = require("cw-sdk-node");
 
@@ -14,14 +14,14 @@ const client = new StreamClient({
 });
 const bot = new TelegramBot(config.Telegram.Token, {polling: true});
 
-var _chatId = 0;
+var _chatId = 0;//Save Telegram chat ID
 var minPrice = 0;
 var maxPrice = 0;
 var lastPrice = 0;
 var interval = 30 * 1000;
 
 bot.on('polling_error', (error) => console.log(error));
-
+//Set min/max notification
 bot.onText(/\/setpeaks [0-9]+ [0-9]+/, (message, match) => {
 
   const chatId = message.chat.id;
@@ -36,7 +36,7 @@ bot.onText(/\/setpeaks [0-9]+ [0-9]+/, (message, match) => {
 
   bot.sendMessage(chatId, reply);
 });
-
+//Get min/max notification price
 bot.onText(/\/getpeaks/, (message) => {
 
   const chatId = message.chat.id;
@@ -47,7 +47,7 @@ bot.onText(/\/getpeaks/, (message) => {
 
   bot.sendMessage(chatId, reply);
 });
-
+//Set interval in minutes
 bot.onText(/\/settimer [0-9]+/, (message, match) => {
 
   const chatId = message.chat.id;
@@ -63,7 +63,7 @@ bot.onText(/\/settimer [0-9]+/, (message, match) => {
 
   bot.sendMessage(chatId, reply);
 });
-
+//Get interval in minutes & seconds
 bot.onText(/\/gettimer/, (message) => {
 
   const chatId = message.chat.id;
@@ -96,12 +96,12 @@ setInterval(() => {
   }
   reply += 'BTC/USD: ' + lastPrice;
   bot.sendMessage(_chatId, reply);
-}, interval);
+}, interval);//Connect every interval
 
 client.onConnect(() => {
   setTimeout(() => {
     client.disconnect();
-  }, 10000);
+  }, 10000);//Disconnect after 10 seconds of streaming
 });
 
 client.onMarketUpdate(marketData => {
